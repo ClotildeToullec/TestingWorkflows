@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Pharo12-64
     env:
-      IMAGE_NAME: TestingWorkflows-main-Pharo12-64
+      IMAGE_NAME: TestingWorkflows-main-Pharo64-12
     steps:
 
 # Run tests and coverage
@@ -19,9 +19,9 @@ jobs:
       - name: Set-up smalltalkCI
         uses: hpi-swa/setup-smalltalkCI@v1
         with:
-          smalltalk-image: Pharo12-64
+          smalltalk-image: Pharo64-12
       - name: Run tests
-        run: smalltalkci -s Pharo12-64
+        run: smalltalkci -s Pharo64-12
         shell: bash
         timeout-minutes: 15
         env: 
