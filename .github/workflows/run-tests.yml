@@ -15,9 +15,6 @@ on:
       create-artifact:
         required: false
         type: boolean
-      run-coverage:
-        required: false
-        type: boolean
 
 jobs:
   run:
@@ -69,13 +66,6 @@ jobs:
               && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
               && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
               || format('{0}-{1}', github.event.repository.name, github.ref_name) }}
-      - name: Coveralls GitHub Action
-        if:  ${{ inputs.run-coverage }}
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          flag-name: ${{ env.IMAGE_NAME }}
-          parallel: true          
 
 # Upload image as artifact
       
@@ -108,15 +98,3 @@ jobs:
             ${{ env.IMAGE_NAME }}.image
             ${{ env.IMAGE_NAME }}.changes
             pharo.version
-
-  coverage:
-    name: Export coverage
-    if: ${{ inputs.run-coverage }}
-    needs: run
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@v2
-      with:  
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        parallel-finished: true
