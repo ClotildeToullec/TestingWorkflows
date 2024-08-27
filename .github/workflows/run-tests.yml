@@ -114,10 +114,6 @@ jobs:
             ${{ env.IMAGE_NAME }}.image
             ${{ env.IMAGE_NAME }}.changes
             pharo.version
-      
-      - name: Succeed
-        id: succeed
-        run: echo "matrix_status=success" >> "$GITHUB_OUTPUT"
 
   coverage:
     name: Export coverage
