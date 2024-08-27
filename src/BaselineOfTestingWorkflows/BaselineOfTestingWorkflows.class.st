@@ -1,6 +1,6 @@
 Class {
 	#name : 'BaselineOfTestingWorkflows',
-	#superclass : 'Object',
+	#superclass : 'BaselineOf',
 	#category : 'BaselineOfTestingWorkflows',
 	#package : 'BaselineOfTestingWorkflows'
 }
