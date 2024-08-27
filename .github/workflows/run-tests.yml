@@ -1,0 +1,132 @@
+name: Run tests
+
+on:
+  workflow_call:
+    inputs: 
+      pharo-versions:
+        required: false
+        type: string
+      image-name:
+        required: false
+        type: string
+      pre-upload-script:
+        required: false
+        type: string
+      create-artifact:
+        required: false
+        type: boolean
+      run-coverage:
+        required: false
+        type: boolean
+    outputs:
+      success:
+        description: "Set to true if any matrix branch succeeds"
+        value: ${{ jobs.run.outputs.success }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    outputs:
+      success: $${{ steps.succeed.outputs.matrix_status }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
+        # Default versions are computed using repository variables:
+          # If a specific Moose version was set for the target branch: the Pharo images associated with this Moose version
+          # Else the Pharo images asociated with Moose-latest.
+        smalltalk: >-
+          ${{ fromJSON(inputs.pharo-versions || 
+            fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
+                                                && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+                                                && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
+                                                || 'Moose-latest']) }}
+          
+    name: ${{ matrix.smalltalk }}
+    steps:
+
+# Run tests and coverage
+    
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Option fetching all commits
+      - name: Set-up smalltalkCI
+        uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+      - name: Run tests
+        run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
+        timeout-minutes: 15
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        # Image name will be the name provided as input followed by a simplified pharo version. 
+        # Example: running on Pharo64-12: '${{inputs.image-name}}-Pharo12'
+        run: |
+           echo IMAGE_NAME=${{ env.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
+        # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release.
+         # echo IMAGE_NAME=${{ inputs.image-name }}-${{ matrix.smalltalk }} | sed 's/64-//g' >> $GITHUB_ENV
+        env: 
+          common-image-name: >-
+            ${{ inputs.image-name || 
+              vars.BRANCHES_CONFIGURATION 
+              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
+              || format('{0}-{1}', github.event.repository.name, github.ref_name) }}
+      - name: Coveralls GitHub Action
+        if:  ${{ inputs.run-coverage }}
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{ env.IMAGE_NAME }}
+          parallel: true          
+
+# Upload image as artifact
+      
+      - name: Pre-upload scripts
+        if: ${{ inputs.create-artifact }}
+        # Remove SmalltalkCI from the image + run custom script if provided.
+        # Exemple of custom script: when building for a Moose release, add the commit id to Moose Welcome browser.
+        run: |
+          ls -l $SMALLTALK_CI_VM
+          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
+        
+      - name: Build artifact
+        if: ${{ inputs.create-artifact }}
+        env:
+          DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
+        run: |
+          mv $SMALLTALK_CI_BUILD/* .
+          mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
+          mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
+          echo ${{ matrix.smalltalk }} | sed -e 's/.*\-//g ; s/\..*//g ; s/$/0/' > pharo.version
+        # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
+        # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
+
+      - name: Upload artifact
+        if: ${{ inputs.create-artifact }}
+        uses: actions/upload-artifact@v4
+        with: 
+          name: ${{ env.IMAGE_NAME }}
+          path: |
+            ${{ env.IMAGE_NAME }}.image
+            ${{ env.IMAGE_NAME }}.changes
+            pharo.version
+      
+      - name: Succeed
+        id: succeed
+        run: echo "matrix_status=success" >> "$GITHUB_OUTPUT"
+
+  coverage:
+    name: Export coverage
+    if: ${{ inputs.run-coverage }}
+    needs: run
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:  
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
