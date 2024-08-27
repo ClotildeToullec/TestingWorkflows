@@ -1,11 +1,6 @@
 name: Run tests
 
-on:
-  workflow_call:
-    inputs: 
-      create-artifact:
-        required: false
-        type: boolean
+on: workflow_call
 
 jobs:
   run:
