@@ -30,7 +30,6 @@ jobs:
 # Upload image as artifact
         
       - name: Build artifact
-        if: ${{ inputs.create-artifact }}
         env:
           DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
         run: |
@@ -40,7 +39,6 @@ jobs:
           echo 120 > pharo.version
 
       - name: Upload artifact
-        if: ${{ inputs.create-artifact }}
         uses: actions/upload-artifact@v4
         with: 
           name: ${{ env.IMAGE_NAME }}
