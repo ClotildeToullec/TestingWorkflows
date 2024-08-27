@@ -3,12 +3,6 @@ name: Run tests
 on:
   workflow_call:
     inputs: 
-      pharo-versions:
-        required: false
-        type: string
-      pre-upload-script:
-        required: false
-        type: string
       create-artifact:
         required: false
         type: boolean
@@ -16,11 +10,9 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        smalltalk: ${{ fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }}
-    name: ${{ matrix.smalltalk }}
+    name: Pharo12-64
+    env:
+      IMAGE_NAME: TestingWorkflows-main-Pharo12-64
     steps:
 
 # Run tests and coverage
@@ -32,18 +24,13 @@ jobs:
       - name: Set-up smalltalkCI
         uses: hpi-swa/setup-smalltalkCI@v1
         with:
-          smalltalk-image: ${{ matrix.smalltalk }}
+          smalltalk-image: Pharo12-64
       - name: Run tests
-        run: smalltalkci -s ${{ matrix.smalltalk }}
+        run: smalltalkci -s Pharo12-64
         shell: bash
         timeout-minutes: 15
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: |
-           echo IMAGE_NAME=${{ env.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
-        env: 
-          common-image-name: ${{ format('{0}-{1}', github.event.repository.name, github.ref_name) }}
 
 # Upload image as artifact
         
@@ -55,9 +42,7 @@ jobs:
           mv $SMALLTALK_CI_BUILD/* .
           mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
           mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
-          echo ${{ matrix.smalltalk }} | sed -e 's/.*\-//g ; s/\..*//g ; s/$/0/' > pharo.version
-        # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
-        # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
+          echo 120 > pharo.version
 
       - name: Upload artifact
         if: ${{ inputs.create-artifact }}
