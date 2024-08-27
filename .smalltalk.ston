@@ -1,7 +1,8 @@
 SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
-      #baseline : 'TestingWorkflows'
+      #baseline : 'TestingWorkflows',
+      #directory : 'src'
     }
   ]
 }
