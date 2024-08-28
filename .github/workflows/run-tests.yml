@@ -33,14 +33,15 @@ jobs:
           mv $SMALLTALK_CI_BUILD/* .
           ls
       
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v4
-#        with: 
-#          name: Artifact
-#          path: |
-#            *.image 
-#            *.changes
-#            pharo.version
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with: 
+          name: Artifact
+          path: |
+            *.image 
+            *.changes
+            *.sources
+            pharo.version
 
       - name: package
         run: |
