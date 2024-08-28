@@ -33,11 +33,25 @@ jobs:
           mv $SMALLTALK_CI_BUILD/* .
           ls
       
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with: 
-          name: Artifact
-          path: |
-            *.image
-            *.changes
-            pharo.version
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v4
+#        with: 
+#          name: Artifact
+#          path: |
+#            *.image 
+#            *.changes
+#            pharo.version
+
+      - name: package
+        run: |
+          zip -r Artifact.zip *.image *.changes *.sources pharo.version
+          ls
+          
+      - name: Update release
+        uses: Xotl/cool-github-releases@v1
+        with:
+          mode: update
+          replace_assets: true
+          tag_name: continuous
+          assets: Artifact.zip
+          github_token: ${{ secrets.GITHUB_TOKEN }}
