@@ -32,14 +32,14 @@ jobs:
       - name: Build artifact
         run: |
           echo 120 > pharo.version
+          mv $SMALLTALK_CI_BUILD/* .
           ls
-          ls $SMALLTALK_CI_BUILD
-
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            /home/runner/.smalltalkCI/_builds/*.image
-            /home/runner/.smalltalkCI/_builds/*.changes
+            *.image
+            *.changes
             pharo.version
