@@ -1,7 +1,11 @@
 name: Run tests
 
 on:
-  [ push, pull_request, workflow_dispatch, repository_dispatch ]
+  push:
+  pull_request:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ dependency_trigger ]
   
 jobs:
   run:
