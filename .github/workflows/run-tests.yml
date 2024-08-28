@@ -30,12 +30,6 @@ jobs:
 # Upload image as artifact
         
       - name: Build artifact
-        env:
-          DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
-        run: |
-          mv $SMALLTALK_CI_BUILD/* .
-          mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
-          mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
           echo 120 > pharo.version
 
       - name: Upload artifact
@@ -43,6 +37,6 @@ jobs:
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            ${{ env.IMAGE_NAME }}.image
-            ${{ env.IMAGE_NAME }}.changes
+            *.image
+            *.changes
             pharo.version
