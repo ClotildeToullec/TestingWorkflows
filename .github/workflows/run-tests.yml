@@ -30,7 +30,9 @@ jobs:
 # Upload image as artifact
         
       - name: Build artifact
-        run: echo 120 > pharo.version
+        run: |
+          echo 120 > pharo.version
+          ls
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
