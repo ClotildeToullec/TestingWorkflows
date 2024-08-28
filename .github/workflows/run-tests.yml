@@ -37,6 +37,6 @@ jobs:
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            *.image
-            *.changes
+            **.image
+            **.changes
             pharo.version
