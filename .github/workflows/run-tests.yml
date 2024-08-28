@@ -54,4 +54,4 @@ jobs:
           replace_assets: true
           tag_name: continuous
           assets: Artifact.zip
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
