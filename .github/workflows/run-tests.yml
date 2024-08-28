@@ -37,6 +37,6 @@ jobs:
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            **.image
-            **.changes
+            $SMALLTALK_CI_BUILD/*.image
+            $SMALLTALK_CI_BUILD/*.changes
             pharo.version
