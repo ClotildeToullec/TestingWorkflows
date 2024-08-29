@@ -1,0 +1,38 @@
+name: Run tests
+
+on: workflow_dispatch
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: ${{ env.pharo_image }}
+    env:
+      pharo_image: Pharo64-12 
+    steps:    
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Option fetching all commits
+      - name: Set-up smalltalkCI
+        uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ env.pharo_image }}
+      - name: Run tests
+        run: smalltalkci -s ${{ env.pharo_image }}
+        shell: bash
+        timeout-minutes: 15
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                    
+      - name: Build artifact
+        run: |
+          mv $SMALLTALK_CI_BUILD/* .
+          echo 120 > pharo.version
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with: 
+          name: ${{ env.pharo_image }}
+          path: |
+            *.image
+            *.changes
+            *.sources
+            pharo.version
