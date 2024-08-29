@@ -1,1 +1,1 @@
-(Smalltalk classNamed: #SmalltalkCI) ifNotNil: [ :sci | sci printToStdout: Smalltalk tools workspace name ]
+SmalltalkCI printToStdout: '-------------------- PLAYGROUND: Smalltalk tools workspace name --------------------'
