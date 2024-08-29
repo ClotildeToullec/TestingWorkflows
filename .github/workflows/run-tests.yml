@@ -89,7 +89,7 @@ jobs:
         if: ${{ inputs.create-artifact }}
         run: |
           mv $SMALLTALK_CI_BUILD/* .
-          120 > pharo.version
+          echo 120 > pharo.version
         # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
         # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
 
