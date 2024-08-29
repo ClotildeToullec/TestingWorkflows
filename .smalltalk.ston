@@ -1,8 +1,12 @@
 SmalltalkCISpec {
+  #preLoading : 'scripts/print-playground.st',
   #loading : [
     SCIMetacelloLoadSpec {
       #baseline : 'TestingWorkflows',
       #directory : 'src'
     }
-  ]
+  ],
+#postLoading : 'scripts/print-playground.st',
+#preTesting : 'scripts/print-playground.st',
+#postTesting : 'scripts/print-playground.st'
 }
