@@ -10,18 +10,16 @@ BaselineOfTestingWorkflows >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [
-		self mooseIDE: spec.
-		spec package: 'TestingWorkflows'.
 		spec
+			package: 'TestingWorkflows';
 			package: 'TestingWorkflows-Tests'
-			with: [ spec requires: #( 'TestingWorkflows' 'MooseIDE' ) ] ]
+			with: [ spec requires: #( 'TestingWorkflows' ) ].
+
+		spec postLoadDoIt: #registerCustomTools ]
 ]
 
-{ #category : 'dependencies' }
-BaselineOfTestingWorkflows >> mooseIDE: spec [
+{ #category : 'actions' }
+BaselineOfTestingWorkflows >> registerCustomTools [
 
-	spec
-		baseline: 'MooseIDE'
-		with: [ 
-		spec repository: 'github://moosetechnology/MooseIDE:development/src' ]
+	MiPlayground register
 ]
