@@ -94,13 +94,13 @@ jobs:
 #          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
         
       - name: Build artifact
-        if: ${{ inputs.create-artifact }}
-        env:
-          DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
+#        if: ${{ inputs.create-artifact }}
+#        env:
+ #         DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
         run: |
           mv $SMALLTALK_CI_BUILD/* .
-          mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
-          mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
+          #mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
+          #mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
           echo ${{ matrix.smalltalk }} | sed -e 's/.*\-//g ; s/\..*//g ; s/$/0/' > pharo.version
         # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
         # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
@@ -111,14 +111,10 @@ jobs:
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            ${{ env.IMAGE_NAME }}.image
-            ${{ env.IMAGE_NAME }}.changes
+            *.image # ${{ env.IMAGE_NAME }}.image
+            *.changes # ${{ env.IMAGE_NAME }}.changes
             *.sources
             pharo.version
-      
-      - name: Succeed
-        id: succeed
-        run: echo "matrix_status=success" >> "$GITHUB_OUTPUT"
 
   coverage:
     name: Export coverage
