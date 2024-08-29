@@ -1,1 +1,1 @@
-SmalltalkCI printToStdout: '-------------------- PLAYGROUND: Smalltalk tools workspace name --------------------'
+SmalltalkCI printToStdout: '-------------------- PLAYGROUND: ', Smalltalk tools workspace name, ' --------------------'
