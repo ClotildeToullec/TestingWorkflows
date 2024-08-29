@@ -18,7 +18,9 @@ jobs:
       - name: Run tests
         run: smalltalkci -s ${{ env.pharo_image }}
         shell: bash
-        timeout-minutes: 15                 
+        timeout-minutes: 15
+      - name: Print playground after run
+        run: $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval "Smalltalk tools workspace name"
       - name: Build artifact
         run: |
           mv $SMALLTALK_CI_BUILD/* .
@@ -32,3 +34,5 @@ jobs:
             *.changes
             *.sources
             pharo.version
+      - name: Playground name at the end
+        run: $SMALLTALK_CI_VM  ./*.image eval "Smalltalk tools workspace name"
