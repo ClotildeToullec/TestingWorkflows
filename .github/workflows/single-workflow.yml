@@ -5,7 +5,7 @@ on: workflow_dispatch
 jobs:
   run:
     runs-on: ubuntu-latest
-    name: ${{ env.pharo_image }}
+    name: Pharo 12
     env:
       pharo_image: Pharo64-12 
     steps:    
