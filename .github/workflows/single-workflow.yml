@@ -35,4 +35,4 @@ jobs:
             *.sources
             pharo.version
       - name: Playground name at the end
-        run: $SMALLTALK_CI_VM  ./*.image eval "Smalltalk tools workspace name"
+        run: vm ./*.image eval "Smalltalk tools workspace name"
