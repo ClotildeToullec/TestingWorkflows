@@ -85,13 +85,13 @@ jobs:
 
 # Upload image as artifact
       
-      - name: Pre-upload scripts
-        if: ${{ inputs.create-artifact }}
-        # Remove SmalltalkCI from the image + run custom script if provided.
-        # Exemple of custom script: when building for a Moose release, add the commit id to Moose Welcome browser.
-        run: |
-          ls -l $SMALLTALK_CI_VM
-          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
+#      - name: Pre-upload scripts
+#        if: ${{ inputs.create-artifact }}
+#        # Remove SmalltalkCI from the image + run custom script if provided.
+#        # Exemple of custom script: when building for a Moose release, add the commit id to Moose Welcome browser.
+#        run: |
+#          ls -l $SMALLTALK_CI_VM
+#          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
         
       - name: Build artifact
         if: ${{ inputs.create-artifact }}
