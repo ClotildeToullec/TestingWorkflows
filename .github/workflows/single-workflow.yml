@@ -11,8 +11,6 @@ jobs:
     steps:    
       - name: Checkout branch
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Option fetching all commits
       - name: Set-up smalltalkCI
         uses: hpi-swa/setup-smalltalkCI@v1
         with:
@@ -20,9 +18,7 @@ jobs:
       - name: Run tests
         run: smalltalkci -s ${{ env.pharo_image }}
         shell: bash
-        timeout-minutes: 15
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                    
+        timeout-minutes: 15                 
       - name: Build artifact
         run: |
           mv $SMALLTALK_CI_BUILD/* .
