@@ -84,24 +84,12 @@ jobs:
           parallel: true          
 
 # Upload image as artifact
-      
-#      - name: Pre-upload scripts
-#        if: ${{ inputs.create-artifact }}
-#        # Remove SmalltalkCI from the image + run custom script if provided.
-#        # Exemple of custom script: when building for a Moose release, add the commit id to Moose Welcome browser.
-#        run: |
-#          ls -l $SMALLTALK_CI_VM
-#          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
-        
+              
       - name: Build artifact
-#        if: ${{ inputs.create-artifact }}
-#        env:
- #         DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
+        if: ${{ inputs.create-artifact }}
         run: |
           mv $SMALLTALK_CI_BUILD/* .
-          #mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
-          #mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
-          echo ${{ matrix.smalltalk }} | sed -e 's/.*\-//g ; s/\..*//g ; s/$/0/' > pharo.version
+          120 > pharo.version
         # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
         # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
 
@@ -111,8 +99,8 @@ jobs:
         with: 
           name: ${{ env.IMAGE_NAME }}
           path: |
-            *.image # ${{ env.IMAGE_NAME }}.image
-            *.changes # ${{ env.IMAGE_NAME }}.changes
+            *.image
+            *.changes
             *.sources
             pharo.version
 
