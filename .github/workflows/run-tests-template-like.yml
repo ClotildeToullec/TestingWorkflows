@@ -11,3 +11,5 @@ jobs:
   run:
     uses: ClotildeToullec/TestingWorkflows/.github/workflows/run-tests.yml@main
     secrets: inherit
+    with:
+      create-artifact: true
