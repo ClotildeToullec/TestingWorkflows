@@ -25,6 +25,7 @@ jobs:
     steps: 
       - name: Print
         run: >-
+          echo 
           ${{ fromJSON(inputs.pharo-versions
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
