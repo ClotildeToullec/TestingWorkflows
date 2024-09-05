@@ -20,15 +20,19 @@ on:
         type: boolean
 
 jobs:
-  run:
+  print:
     runs-on: ubuntu-latest
-    env:
-      smalltalk-version: >-
+    steps: 
+      - name: Print
+        run: >-
           ${{ fromJSON(inputs.pharo-versions
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
           || 'Moose-latest']) }}
+
+  run:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
