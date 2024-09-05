@@ -13,3 +13,4 @@ jobs:
     secrets: inherit
     with:
       create-artifact: true
+      pharo-versions: '[ Moose64-trunk ]'
