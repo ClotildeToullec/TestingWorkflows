@@ -20,19 +20,6 @@ on:
         type: boolean
 
 jobs:
-  print:
-    runs-on: ubuntu-latest
-    steps: 
-      - name: Print
-        env: 
-          result: >-
-            ${{ inputs.pharo-versions
-            || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
-            && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-            && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-            || 'Moose-latest'] }}
-        run: echo ${{ env.result }}
-
   run:
     runs-on: ubuntu-latest
     strategy:
