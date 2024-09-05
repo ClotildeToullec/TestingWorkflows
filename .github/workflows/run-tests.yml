@@ -24,13 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Print
-        run: >-
-          echo 
-          ${{ fromJSON(inputs.pharo-versions
-          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-          || 'Moose-latest']) }}
+        env: 
+          result: >-
+            ${{ inputs.pharo-versions
+            || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
+            && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+            && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
+            || 'Moose-latest'] }}
+        run: echo ${{ env.result }}
 
   run:
     runs-on: ubuntu-latest
