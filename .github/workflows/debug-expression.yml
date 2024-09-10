@@ -30,7 +30,7 @@ jobs:
         || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION
         && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
         && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
-        || 'Moose-latest'] }}" >> "$GITHUB_OUTPUT"
+        || 'Moose-latest'] }}
     steps:
       - run: echo ${{ env.pharo-versions }}
 
