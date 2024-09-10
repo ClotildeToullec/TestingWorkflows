@@ -78,8 +78,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set image name
         run: echo IMAGE_NAME=${{ needs.parameters.outputs.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
-        # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release.
-         # echo IMAGE_NAME=${{ env.common-image-name }}-${{ matrix.smalltalk }} | sed 's/64-//g' >> $GITHUB_ENV
+        # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release: | sed 's/64-//g' >> $GITHUB_ENV
 
       - name: Coveralls GitHub Action
         if:  ${{ inputs.run-coverage }}
