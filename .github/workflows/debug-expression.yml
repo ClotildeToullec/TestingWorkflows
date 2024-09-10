@@ -37,6 +37,6 @@ jobs:
     needs: run
     strategy:
       matrix:
-        smalltalk: ${{ needs.run.outputs.pharo-versions }}
+        smalltalk: ${{ fromJSON(needs.run.outputs.pharo-versions) }}
     steps:
       - run: echo ${{ matrix.smalltalk }}
