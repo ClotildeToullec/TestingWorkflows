@@ -1,4 +1,4 @@
-name: Simple workflow
+name: Debug
 
 on: workflow_dispatch
 
