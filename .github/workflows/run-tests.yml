@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
+      common-image-name: ${{ env.common-image-name }}
     env: 
         # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
         # Default versions are computed using repository variables:
@@ -40,6 +41,14 @@ jobs:
         || 'Moose-latest'] }}
     steps:
       - run: echo "Pharo version:" ${{ env.pharo-versions }}
+      - run: >- 
+          echo common-image-name=${{ inputs.image-name || 
+          vars.BRANCHES_CONFIGURATION
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].imgae-name
+          || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
+          || format('{0}-{1}', github.event.repository.name, github.ref_name) }} | sed 's/\///g'  >> $GITHUB_ENV
       
   run:
     runs-on: ubuntu-latest
@@ -68,19 +77,10 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set image name
-        # Image name will be the name provided as input followed by a simplified pharo version. 
-        # Example: running on Pharo64-12: '${{inputs.image-name}}-Pharo12'
-        run: |
-          echo IMAGE_NAME=${{ env.common-image-name }}-${{ matrix.smalltalk }} | sed 's/\///g'  >> $GITHUB_ENV
+        run: echo IMAGE_NAME=${{ needs.parameters.outputs.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
         # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release.
-         # echo IMAGE_NAME=${{ inputs.image-name }}-${{ matrix.smalltalk }} | sed 's/64-//g' >> $GITHUB_ENV
-        env: 
-          common-image-name: >-
-            ${{ inputs.image-name || 
-              vars.BRANCHES_CONFIGURATION 
-              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
-              || format('{0}-{1}', github.event.repository.name, github.ref_name) }}
+         # echo IMAGE_NAME=${{ env.common-image-name }}-${{ matrix.smalltalk }} | sed 's/64-//g' >> $GITHUB_ENV
+
       - name: Coveralls GitHub Action
         if:  ${{ inputs.run-coverage }}
         uses: coverallsapp/github-action@v2
