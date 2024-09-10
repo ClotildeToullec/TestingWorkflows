@@ -22,13 +22,21 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    env: 
-      pharo:
-          ${{ inputs.pharo-versions
-          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-          || 'Moose-latest'] }}
+    outputs:
+      pharo-versions: ${{ steps.set-infos.outputs.pharo-versions }}
     steps:
-      - run: echo ${{ env.pharo }}
-      - run: echo ${{ toJSON(fromJSON(env.pharo)) }}
+      - id: set-infos
+        run: echo pharo-versions = ${{ inputs.pharo-versions
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
+          || 'Moose-latest'] }} >> "$GITHUB_OUTPUT"
+
+  print:
+    runs-on: ubuntu-latest
+    needs: run
+    strategy:
+      matrix:
+        smalltalk: ${{ needs.run.outputs.pharo-versions }}
+    steps:
+      - run: echo ${{ matrix.smalltalk }}
