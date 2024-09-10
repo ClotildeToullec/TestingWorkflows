@@ -1,0 +1,20 @@
+name: Simple workflow
+
+on: workflow_dispatch
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo ref_name = ${{github.ref_name}}
+      - run: echo ref_name = ${{github.base_ref}}
+      - run: >-
+          echo Full condition = 
+          ${{ fromJSON(inputs.pharo-versions 
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
+          || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
+          || 'Moose-latest']) }}
