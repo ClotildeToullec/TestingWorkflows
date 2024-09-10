@@ -20,21 +20,33 @@ on:
         type: boolean
 
 jobs:
+  parameters:
+    name: Set parameters
+    runs-on: ubuntu-latest
+    outputs:
+      pharo-versions: ${{ env.pharo-versions }}
+    env: 
+        # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
+        # Default versions are computed using repository variables:
+          # If a specific Moose version was set for the target branch: the Pharo images associated with this Moose version
+          # Else the Pharo images asociated with Moose-latest.
+      pharo-versions: >-
+        ${{ inputs.pharo-versions
+        || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION
+        && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+        && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
+        || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
+        && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
+        || 'Moose-latest'] }}
+    steps:
+      - run: echo "Pharo version:" ${{ env.pharo-versions }}
+      
   run:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
-        # Default versions are computed using repository variables:
-          # If a specific Moose version was set for the target branch: the Pharo images associated with this Moose version
-          # Else the Pharo images asociated with Moose-latest.
-        smalltalk: >-
-          ${{ fromJSON(inputs.pharo-versions
-          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-          || 'Moose-latest']) }}
+        smalltalk: ${{ fromJSON(needs.parameters.outputs.pharo-versions}}
     name: ${{ matrix.smalltalk }}
     steps:
 
