@@ -26,11 +26,11 @@ jobs:
       pharo-versions: ${{ steps.set-infos.outputs.pharo-versions }}
     steps:
       - id: set-infos
-        run: echo pharo-versions = ${{ inputs.pharo-versions
+        run: echo "pharo-versions = ${{ inputs.pharo-versions
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
-          || 'Moose-latest'] }} >> "$GITHUB_OUTPUT"
+          || 'Moose-latest'] }}" >> "$GITHUB_OUTPUT"
 
   print:
     runs-on: ubuntu-latest
