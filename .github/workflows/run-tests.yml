@@ -36,7 +36,7 @@ jobs:
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
-          || 'Moose-latest' }} }}
+          || 'Moose-latest']) }}
     name: ${{ matrix.smalltalk }}
     steps:
 
