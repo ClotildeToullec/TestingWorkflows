@@ -8,13 +8,22 @@ jobs:
 
     steps:
       - run: echo ref_name = ${{github.ref_name}}
-      - run: echo ref_name = ${{github.base_ref}}
+      - run: echo base_ref = ${{github.base_ref}}
       - run: >-
-          echo Full condition = 
-          ${{ fromJSON(inputs.pharo-versions 
-          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
+          echo base_ref.moose-version = 
+          ${{ vars.BRANCHES_CONFIGURATION 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version }}
+      - run: >-
+          echo ref_name.moose-version = 
+          ${{ vars.BRANCHES_CONFIGURATION 
+          || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version }}
+      - run: >-
+          echo Full = 
+          ${{ vars.BRANCHES_CONFIGURATION 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-          || 'Moose-latest']) }}
+          || 'Moose-latest' }}
