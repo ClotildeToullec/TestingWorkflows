@@ -32,12 +32,11 @@ jobs:
         smalltalk: >-
           ${{ fromJSON(inputs.pharo-versions
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+          && (fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version)
           || 'Moose-latest']) }}
-        # fromJSON( input | fromJSON( VAR [ var & base & base.moose | ref & ref.moose | default ] ) )
     name: ${{ matrix.smalltalk }}
     steps:
 
