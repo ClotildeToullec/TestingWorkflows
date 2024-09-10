@@ -24,8 +24,8 @@ jobs:
       - run: >-
           echo Full = 
           ${{ vars.BRANCHES_CONFIGURATION 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
+          && (fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version)
           || 'Moose-latest' }}
