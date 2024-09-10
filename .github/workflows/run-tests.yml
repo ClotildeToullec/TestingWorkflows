@@ -58,6 +58,8 @@ jobs:
   run:
     runs-on: ubuntu-latest
     needs: parameters
+    env:
+      IMAGE_NAME: ${{ needs.parameters.common-imgae-name }}
     strategy:
       fail-fast: false
       matrix:
@@ -81,8 +83,6 @@ jobs:
         timeout-minutes: 15
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo IMAGE_NAME=${{ needs.parameters.common-image-name }} >> $GITHUB_ENV
 
       - name: Coveralls GitHub Action
         if:  ${{ inputs.run-coverage }}
