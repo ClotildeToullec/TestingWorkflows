@@ -1,0 +1,32 @@
+name: Debug Expression
+
+on:
+  workflow_call:
+    inputs: 
+      pharo-versions:
+        required: false
+        type: string
+      image-name:
+        required: false
+        type: string
+      pre-upload-script:
+        required: false
+        type: string
+      create-artifact:
+        required: false
+        type: boolean
+      run-coverage:
+        required: false
+        type: boolean
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: >- 
+          echo
+          ${{ inputs.pharo-versions
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
+          || 'Moose-latest'] }}
