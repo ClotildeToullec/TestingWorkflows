@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: parameters
     env:
-      IMAGE_NAME: ${{ needs.parameters.common-imgae-name }}
+      IMAGE_NAME: ${{ needs.parameters.common-image-name }}
     strategy:
       fail-fast: false
       matrix:
