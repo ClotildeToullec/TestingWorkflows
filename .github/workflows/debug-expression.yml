@@ -22,12 +22,12 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    steps:
-      - run: >- 
-          echo PHARO =
+    env: 
+      pharo:
           ${{ inputs.pharo-versions
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version 
-          || 'Moose-latest'] }} >> GITHUB_ENV
-      - run: echo $PHARO
+          || 'Moose-latest'] }}
+    steps:
+      - run: echo ${{ env.pharo }}
