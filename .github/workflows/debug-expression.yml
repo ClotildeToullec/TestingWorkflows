@@ -31,3 +31,4 @@ jobs:
           || 'Moose-latest'] }}
     steps:
       - run: echo ${{ env.pharo }}
+      - run: echo ${{ toJSON(fromJSON(env.pharo)) }}
