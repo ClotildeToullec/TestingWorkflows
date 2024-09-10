@@ -13,12 +13,14 @@ jobs:
           echo base_ref.moose-version = 
           ${{ vars.BRANCHES_CONFIGURATION 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version }}
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
+          || 'Moose-latest' }}
       - run: >-
           echo ref_name.moose-version = 
           ${{ vars.BRANCHES_CONFIGURATION 
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version }}
+          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version
+          || 'Moose-latest' }}
       - run: >-
           echo Full = 
           ${{ vars.BRANCHES_CONFIGURATION 
