@@ -69,7 +69,7 @@ jobs:
               vars.BRANCHES_CONFIGURATION
               && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
               && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].image-name
-              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
+              || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
               && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
               || format('{0}-{1}', github.event.repository.name, github.ref_name) }}
       - name: Coveralls GitHub Action
