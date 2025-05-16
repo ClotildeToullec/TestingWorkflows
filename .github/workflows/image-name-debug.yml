@@ -1,0 +1,20 @@
+name: Run tests
+
+on:
+  workflow_call:
+    inputs: 
+      image-name:
+        required: false
+        type: string
+        
+jobs:
+  parameters:
+    name: Set parameters
+    runs-on: ubuntu-latest
+    outputs:
+      common-image-name: ${{ env.common-image-name }}
+    steps:
+      - run: echo 'ref_name' ${{ github.ref_name }}
+      - run: echo 'input' ${{ inputs.image-name }}
+      - run: echo 'Full var' ${{ vars.BRANCHES_CONFIGURATION }}
+      - run: echo 'var.ref_name' ${{ (fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]) }}
