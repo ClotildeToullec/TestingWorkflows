@@ -1,7 +1,7 @@
 name: Run tests
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs: 
       image-name:
         required: false
@@ -15,6 +15,5 @@ jobs:
       common-image-name: ${{ env.common-image-name }}
     steps:
       - run: echo 'ref_name' ${{ github.ref_name }}
-      - run: echo 'input' ${{ inputs.image-name }}
       - run: echo 'Full var' ${{ vars.BRANCHES_CONFIGURATION }}
       - run: echo 'var.ref_name' ${{ (fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]) }}
