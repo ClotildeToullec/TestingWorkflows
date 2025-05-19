@@ -1,7 +1,8 @@
 name: Debug name
 
 on:
-  workflow_dispatch
+  - workflow_dispatch
+  - release
         
 jobs:
   parameters:
@@ -9,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH: ${{ github.ref_name }}
+      TAG: ${{ github.event.release.target_commitish  }}
     steps:
       - run: echo 'ref_name' ${{ github.ref_name }}
       - run: echo 'ref_name split' ${BRANCH##*/}
-      
+      - run: echo 'tag-branch' ${{ github.ref_name }}
+
