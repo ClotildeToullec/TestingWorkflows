@@ -3,6 +3,7 @@ name: Debug name
 on:
   - workflow_dispatch
   - release
+  - push
         
 jobs:
   parameters:
