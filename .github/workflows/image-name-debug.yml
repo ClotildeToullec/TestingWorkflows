@@ -12,7 +12,7 @@ jobs:
     env:
       BRANCH: ${{ github.ref_name }}
       TAG: ${{ github.event.release.target_commitish }}
-      USE: ${{ TAG || BRANCH }}
+      USE: ${{ $TAG || $BRANCH }}
     steps:
       - run: echo 'ref_name' ${{ github.ref_name }}
       - run: echo 'ref_name split' ${BRANCH##*/}
