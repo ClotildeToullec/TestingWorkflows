@@ -9,5 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo 'ref_name' ${{ github.ref_name }}
-      - run: echo 'ref_name split' ${{ github.ref_name }}.split('/')[-1]
+      - run: echo 'ref_name split' ${{ github.ref_name }}##*/
       
