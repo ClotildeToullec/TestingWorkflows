@@ -7,7 +7,9 @@ jobs:
   parameters:
     name: Set parameters
     runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.ref_name }}
     steps:
       - run: echo 'ref_name' ${{ github.ref_name }}
-      - run: echo 'ref_name split' ${{ github.ref_name##*/ }}
+      - run: echo 'ref_name split' ${BRANCH##*/}
       
