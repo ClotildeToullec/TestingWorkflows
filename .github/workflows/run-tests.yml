@@ -47,26 +47,22 @@ jobs:
           || (github.event_name == 'pull_request' && github.base_ref)
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }} 
           >> $GITHUB_ENV
-        
-      - name: Set Pharo versions
-        if: ${{ inputs.image-name }}
-        run: echo pharo-versions=${{inputs.image-name}} >> $GITHUB_ENV
-      - name: Set Pharo versions
-        if: ${{ ! env.pharo-versions && vars.BRANCHES_CONFIGURATION }}
-        run: echo pharo-versions=${{ fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version] }} >> $GITHUB_ENV      
-      - name: Set Pharo versions
-        if: ${{ ! env.pharo-versions }}
-        run: echo pharo-versions=${{ fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} >> $GITHUB_ENV
 
-      - run: echo "Pharo version:" ${{ env.pharo-versions }}
-      - run: >- 
-          echo common-image-name=${{ inputs.image-name || 
-          vars.BRANCHES_CONFIGURATION
-          && (fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].imgae-name
-          || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-          && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name)
-          || format('{0}-{1}', github.event.repository.name, github.ref_name) }} | sed 's/\///g'  >> $GITHUB_ENV
+      - name: Set Pharo versions
+        run: >-
+          echo pharo-versions=
+          ${{ inputs.image-name 
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
+          >> $GITHUB_ENV
+
+      - name: Set Image name
+        run: >-
+          ${{ inputs.image-name 
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name])
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
+          | sed 's/\///g'
+          >> $GITHUB_ENV
 
   printing:
     name: Printing Pharo version
