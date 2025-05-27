@@ -26,23 +26,14 @@ jobs:
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
       common-image-name: ${{ env.common-image-name }}
-    env: 
         # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
         # Default versions are computed using repository variables:
           # If a specific Moose version was set for the target branch: the Pharo images associated with this Moose version
           # Else the Pharo images asociated with Moose-latest.
-      pharo-versions: >-
-        ${{ inputs.pharo-versions
-        || fromJSON(vars.MOOSE_PHARO_VERSIONS)[vars.BRANCHES_CONFIGURATION
-        && (fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]
-        && fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref].moose-version
-        || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]
-        && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version)
-        || 'Moose-latest'] }}
     steps:
       - name: Get branch name
         run: >-
-          echo branch-name =
+          echo branch-name=
           ${{ (github.event_name == 'push' && github.ref_name) 
           || (github.event_name == 'pull_request' && github.base_ref)
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }} 
@@ -50,15 +41,15 @@ jobs:
 
       - name: Set Pharo versions
         run: >-
-          echo pharo-versions =
-          ${{ inputs.image-name 
+          echo pharo-versions=
+          ${{ inputs.pharo-versions 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
           >> $GITHUB_ENV
 
       - name: Set Image name
         run: >-
-          echo common-image-name =
+          echo common-image-name=
           ${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
