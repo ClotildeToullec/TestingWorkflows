@@ -40,6 +40,26 @@ jobs:
         && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].moose-version)
         || 'Moose-latest'] }}
     steps:
+      - name: Get branch name
+        if: ${{ github.event_name = 'push' }}
+        run: echo branch-name = ${{ github.ref_name }} >> $GITHUB_ENV
+      - name: Get branch name
+        if: ${{ github.event_name = 'pull_request' }}
+        run: echo branch-name = ${{ github.base_ref }} >> $GITHUB_ENV
+      - name: Get branch name
+        if: ${{ github.event_name = 'release' }}
+        run: echo branch-name = ${{ github.github.event.release.target_commitish }} >> $GITHUB_ENV
+        
+      - name: Set Pharo versions
+        if: ${{ inputs.image-name }}
+        run: echo pharo-versions=${{inputs.image-name}} >> $GITHUB_ENV
+      - name: Set Pharo versions
+        if: ${{ ! env.pharo-versions && vars.BRANCHES_CONFIGURATION }}
+        run: echo pharo-versions=${{ fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version] }} >> $GITHUB_ENV      
+      - name: Set Pharo versions
+        if: ${{ ! env.pharo-versions }}
+        run: echo pharo-versions=${{ fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} >> $GITHUB_ENV
+
       - run: echo "Pharo version:" ${{ env.pharo-versions }}
       - run: >- 
           echo common-image-name=${{ inputs.image-name || 
