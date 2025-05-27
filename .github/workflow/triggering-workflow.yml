@@ -1,4 +1,4 @@
-name: Run tests and update release
+name: Run tests and update release.
 
 on: push
   
