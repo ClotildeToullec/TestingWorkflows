@@ -33,24 +33,21 @@ jobs:
     steps:
       - name: Get branch name
         run: >-
-          echo branch-name=
-          ${{ (github.event_name == 'push' && github.ref_name) 
+          echo branch-name=${{ (github.event_name == 'push' && github.ref_name) 
           || (github.event_name == 'pull_request' && github.base_ref)
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }} 
           >> $GITHUB_ENV
 
       - name: Set Pharo versions
         run: >-
-          echo pharo-versions=
-          ${{ inputs.pharo-versions 
+          echo pharo-versions=${{ inputs.pharo-versions 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
           >> $GITHUB_ENV
 
       - name: Set Image name
         run: >-
-          echo common-image-name=
-          ${{ inputs.image-name 
+          echo common-image-name=${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
           >> $GITHUB_ENV
