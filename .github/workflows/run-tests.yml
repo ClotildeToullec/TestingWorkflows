@@ -53,4 +53,4 @@ jobs:
     needs: parameters
     steps:
       - run: echo ${{ needs.parameters.outputs.pharo-versions }}
-      - run: echo ${{fromJSON(needs.parameters.outputs.pharo-versions}}
+      - run: echo ${{fromJSON(needs.parameters.outputs.pharo-versions)}}
