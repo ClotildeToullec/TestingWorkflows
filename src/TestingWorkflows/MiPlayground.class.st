@@ -21,7 +21,7 @@ MiPlayground class >> initialize [
 
 	"Make playground active by default"
 
-	registry register: self as: #workspace
+	self registerToolsOn: Smalltalk tools
 ]
 
 { #category : 'world menu' }
@@ -41,7 +41,7 @@ MiPlayground class >> open [
 MiPlayground class >> registerToolsOn: registry [
 	"Add ourselves to registry. See [Smalltalk tools]"
 
-	Smalltalk tools workspaceTool: self
+	registry workspaceTool: self
 ]
 
 { #category : 'private - factory' }
