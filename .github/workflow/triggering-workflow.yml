@@ -3,6 +3,11 @@ name: Run tests and update release.
 on: push
   
 jobs:
+  test:
+    run-on: ubuntu-latest
+    steps:
+      - run: echo "Test"
+    
   run-tests-and-update-release:
     name: Run tests and update release
     uses: .github/workflows/test-and-release.yml@main
