@@ -21,7 +21,7 @@ MiPlayground class >> initialize [
 
 	"Make playground active by default"
 
-	self register
+	registry register: self as: #workspace
 ]
 
 { #category : 'world menu' }
