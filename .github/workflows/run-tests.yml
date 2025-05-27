@@ -50,10 +50,9 @@ jobs:
       - name: Set Image name
         run: >-
           echo common-image-name=
-          (${{ inputs.image-name 
+          ${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
-          | sed 's/\///g')
           >> $GITHUB_ENV
       
   run:
