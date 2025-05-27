@@ -61,7 +61,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        smalltalk: ${{ fromJSON(needs.parameters.outputs.pharo-versions) }}
+        smalltalk: ${{ fromJSON(inputs.pharo-versions 
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }}
+    
     name: ${{ matrix.smalltalk }}
     steps:
 
