@@ -56,14 +56,14 @@ jobs:
     steps:
       - run: echo "input.pharo-version:" ${{ inputs.pahro-versions }}
       - run: >- 
-          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.event.release.target_commitish]" 
-          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.event.release.target_commitish] }}
+          echo "github.event.release.target_commitish" 
+          ${{ github.event.release.target_commitish }}
       - run: >- 
-          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]" 
-          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref] }}
+          echo "github.base_ref" 
+          ${{ github.base_ref }}
       - run: >- 
-          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]" 
-          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] }}
+          echo "github.ref_name" 
+          ${{ github.ref_name }}
       
   run:
     runs-on: ubuntu-latest
