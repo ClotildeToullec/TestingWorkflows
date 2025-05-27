@@ -35,9 +35,9 @@ jobs:
       - name: Set Pharo versions
         id: pharo-version
         run: >-
-          echo pharo-versions=${{ inputs.pharo-versions 
+          echo pharo-versions=${{ toJSON(inputs.pharo-versions 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
-          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }} 
           >> $GITHUB_OUTPUT
 
       - name: Set Image name
