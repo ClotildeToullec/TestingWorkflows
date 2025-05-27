@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
-      common-image-name: ${{ env.common-image-name }}
+      common-image-name: ${{ env.common-image-name 
     env: 
         # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
         # Default versions are computed using repository variables:
@@ -53,17 +53,20 @@ jobs:
   printing:
     name: Printing Pharo version
     runs-on: ubuntu-latest
+    env:
+      branches-config: ${{ fromJSON(vars.BRANCHES_CONFIGURATION) }}
     steps:
-      - run: echo "input.pharo-version:" ${{ inputs.pahro-versions }}
+      - run: echo "input.pharo-versions:" ${{ inputs.pharo-versions }}
       - run: >- 
-          echo "github.event.release.target_commitish" 
+          echo "github.event.release.target_commitish:" 
           ${{ github.event.release.target_commitish }}
       - run: >- 
-          echo "github.base_ref" 
+          echo "github.base_ref:" 
           ${{ github.base_ref }}
       - run: >- 
-          echo "github.ref_name" 
+          echo "github.ref_name:" 
           ${{ github.ref_name }}
+      - run: echo "branches-config.v12.release-tag:" ${{ env.branches-config.v12.release-tag }}
       
   run:
     runs-on: ubuntu-latest
