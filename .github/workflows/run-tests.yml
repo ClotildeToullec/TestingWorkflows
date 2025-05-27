@@ -47,7 +47,7 @@ jobs:
           >> $GITHUB_ENV
      
       - name: Print Pharo versions
-        run: echo ${{ fromJSON(env.pharo-versions)[0] }}
+        run: echo ${{ fromJSON(env.pharo-versions) }}
       
   run:
     runs-on: ubuntu-latest
