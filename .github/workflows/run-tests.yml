@@ -18,7 +18,11 @@ on:
       run-coverage:
         required: false
         type: boolean
-
+env:
+  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
+    || (github.event_name == 'pull_request' && github.base_ref)
+    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+          
 jobs:
   parameters:
     name: Set parameters
@@ -26,10 +30,6 @@ jobs:
     outputs:
       pharo-versions: ${{ steps.pharo-version.outputs.pharo-versions }}
       common-image-name: ${{ steps.image-name.outputs.common-image-name }}
-    env:
-      branch-name: ${{ (github.event_name == 'push' && github.ref_name) 
-          || (github.event_name == 'pull_request' && github.base_ref)
-          || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
           
     steps:
       - name: Set Pharo versions
