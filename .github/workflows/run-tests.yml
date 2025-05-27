@@ -26,14 +26,12 @@ jobs:
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
       common-image-name: ${{ env.common-image-name }}
-    steps:
-      - name: Get branch name
-        run: >-
-          echo branch-name=${{ (github.event_name == 'push' && github.ref_name) 
+    env:
+      branch-name: ${{ (github.event_name == 'push' && github.ref_name) 
           || (github.event_name == 'pull_request' && github.base_ref)
-          || (github.event_name == 'release' && github.github.event.release.target_commitish) }} 
-          >> $GITHUB_ENV
-
+          || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+          
+    steps:
       - name: Set Pharo versions
         run: >-
           echo pharo-versions=${{ inputs.pharo-versions 
