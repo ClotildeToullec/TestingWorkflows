@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
-      common-image-name: ${{ env.common-image-name 
+      common-image-name: ${{ env.common-image-name }}
     env: 
         # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
         # Default versions are computed using repository variables:
