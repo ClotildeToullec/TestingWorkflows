@@ -45,6 +45,9 @@ jobs:
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
           >> $GITHUB_ENV
+     
+      - name: Print Pharo versions
+        run: echo ${{ env.pharo-versions }}
       
   run:
     runs-on: ubuntu-latest
