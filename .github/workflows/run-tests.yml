@@ -41,13 +41,13 @@ jobs:
         || 'Moose-latest'] }}
     steps:
       - name: Get branch name
-        if: ${{ github.event_name = 'push' }}
+        if: ${{ github.event_name == 'push' }}
         run: echo branch-name = ${{ github.ref_name }} >> $GITHUB_ENV
       - name: Get branch name
-        if: ${{ github.event_name = 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: echo branch-name = ${{ github.base_ref }} >> $GITHUB_ENV
       - name: Get branch name
-        if: ${{ github.event_name = 'release' }}
+        if: ${{ github.event_name == 'release' }}
         run: echo branch-name = ${{ github.github.event.release.target_commitish }} >> $GITHUB_ENV
         
       - name: Set Pharo versions
