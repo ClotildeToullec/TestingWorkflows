@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        smalltalk: ${{ needs.parameters.outputs.pharo-versions }}
+        smalltalk: ${{ fromJSON(needs.parameters.outputs.pharo-versions) }}
     name: ${{ matrix.smalltalk }}
     steps:
 
