@@ -24,8 +24,8 @@ jobs:
     name: Set parameters
     runs-on: ubuntu-latest
     outputs:
-      pharo-versions: ${{ env.pharo-versions }}
-      common-image-name: ${{ env.common-image-name }}
+      pharo-versions: ${{ steps.pharo-version.outputs.pharo-versions }}
+      common-image-name: ${{ steps.image-name.outputs.common-image-name }}
     env:
       branch-name: ${{ (github.event_name == 'push' && github.ref_name) 
           || (github.event_name == 'pull_request' && github.base_ref)
@@ -33,18 +33,20 @@ jobs:
           
     steps:
       - name: Set Pharo versions
+        id: pharo-version
         run: >-
           echo pharo-versions=${{ inputs.pharo-versions 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
-          >> $GITHUB_ENV
+          >> $GITHUB_OUTPUT
 
       - name: Set Image name
+        id: image-name
         run: >-
           echo common-image-name=${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
-          >> $GITHUB_ENV
+          >> $GITHUB_OUTPUT
      
   debug:
     runs-on: ubuntu-latest
