@@ -49,6 +49,21 @@ jobs:
           || fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
           && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name)
           || format('{0}-{1}', github.event.repository.name, github.ref_name) }} | sed 's/\///g'  >> $GITHUB_ENV
+
+  printing:
+    name: Printing Pharo version
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "input.pharo-version:" ${{ inputs.pahro-versions }}
+      - run: >- 
+          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.event.release.target_commitish]" 
+          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.event.release.target_commitish] }}
+      - run: >- 
+          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref]" 
+          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.base_ref] }}
+      - run: >- 
+          echo "fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name]" 
+          ${{ fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] }}
       
   run:
     runs-on: ubuntu-latest
