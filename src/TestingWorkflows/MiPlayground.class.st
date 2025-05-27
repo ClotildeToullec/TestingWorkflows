@@ -41,7 +41,7 @@ MiPlayground class >> open [
 MiPlayground class >> registerToolsOn: registry [
 	"Add ourselves to registry. See [Smalltalk tools]"
 
-	registry workspaceTool: self
+	Smalltalk tools workspaceTool: self
 ]
 
 { #category : 'private - factory' }
