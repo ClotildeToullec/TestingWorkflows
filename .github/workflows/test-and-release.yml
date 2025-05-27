@@ -22,7 +22,7 @@ on:
 jobs:
   run-tests:
     name: Run tests
-    uses: ./.github/.github/workflows/run-tests.yml
+    uses: ./.github/workflows/run-tests.yml
     with:
       image-name: ${{ inputs.image-name }}
       pharo-versions: ${{ inputs.pharo-versions }}
@@ -34,7 +34,7 @@ jobs:
     name: Update ${{ inputs.release-tag }} release
     if: ${{ always() }}
     needs: run-tests
-    uses: ./.github/.github/workflows/update-release.yml
+    uses: ./.github/workflows/update-release.yml
     with:
        image-name: ${{ inputs.image-name }}
        release-tag: ${{ inputs.release-tag }}
