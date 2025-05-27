@@ -26,10 +26,6 @@ jobs:
     outputs:
       pharo-versions: ${{ env.pharo-versions }}
       common-image-name: ${{ env.common-image-name }}
-        # Run on the images provided as input. If no images were provided (empty string) run on the default versions.
-        # Default versions are computed using repository variables:
-          # If a specific Moose version was set for the target branch: the Pharo images associated with this Moose version
-          # Else the Pharo images asociated with Moose-latest.
     steps:
       - name: Get branch name
         run: >-
