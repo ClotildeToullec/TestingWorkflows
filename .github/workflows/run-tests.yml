@@ -51,7 +51,7 @@ jobs:
         run: >-
           echo common-image-name=
           ${{ inputs.image-name 
-          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name])
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
           | sed 's/\///g'
           >> $GITHUB_ENV
