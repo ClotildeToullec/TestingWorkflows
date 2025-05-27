@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Get branch name
         run: >-
-          echo branch-name=
+          echo branch-name =
           ${{ (github.event_name == 'push' && github.ref_name) 
           || (github.event_name == 'pull_request' && github.base_ref)
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }} 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Set Pharo versions
         run: >-
-          echo pharo-versions=
+          echo pharo-versions =
           ${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
@@ -58,29 +58,12 @@ jobs:
 
       - name: Set Image name
         run: >-
+          echo common-image-name =
           ${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
           | sed 's/\///g'
           >> $GITHUB_ENV
-
-  printing:
-    name: Printing Pharo version
-    runs-on: ubuntu-latest
-    env:
-      branches-config: ${{ fromJSON(vars.BRANCHES_CONFIGURATION) }}
-    steps:
-      - run: echo "input.pharo-versions:" ${{ inputs.pharo-versions }}
-      - run: >- 
-          echo "github.event.release.target_commitish:" 
-          ${{ github.event.release.target_commitish }}
-      - run: >- 
-          echo "github.base_ref:" 
-          ${{ github.base_ref }}
-      - run: >- 
-          echo "github.ref_name:" 
-          ${{ github.ref_name }}
-      - run: echo "branches-config.v12.release-tag:" ${{ env.branches-config.v12.release-tag }}
       
   run:
     runs-on: ubuntu-latest
