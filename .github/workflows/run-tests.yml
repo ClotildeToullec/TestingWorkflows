@@ -33,14 +33,18 @@ jobs:
       - name: Set Pharo versions
         id: pharo-version
         run: |
-          echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c '.["Moose-latest"]' > tmp.json
-          echo "pharo-versions=$(cat tmp.json)" >> $GITHUB_OUTPUT
-#    run: >-
-#          echo pharo-versions=${{ 
-#          inputs.pharo-versions 
-##          || vars.BRANCHES_CONFIGURATION && toJSON((fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version]))
- #         || toJSON(fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }} 
- #         >> $GITHUB_OUTPUT
+          if [ -n "${{ inputs.pharo-versions }}" ]; then
+          echo "pharo-versions=${{ inputs.pharo-versions }}" >> $GITHUB_OUTPUT
+
+          elif [ -n "${{ vars.BRANCHES_CONFIGURATION }}" ]; then
+          moose_version=$(echo '${{ vars.BRANCHES_CONFIGURATION }}' | jq -r --arg branch "${{ env.branch-name }}" '.[$branch]."moose-version"')
+          pharo_versions=$(echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c --arg mv "$moose_version" '.[$mv]')
+          echo "pharo-versions=$pharo_versions" >> $GITHUB_OUTPUT
+
+          else
+            pharo_versions=$(echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c '."Moose-latest"')
+            echo "pharo-versions=$pharo_versions" >> $GITHUB_OUTPUT
+          fi
 
   debug: 
     runs-on: ubuntu-latest
