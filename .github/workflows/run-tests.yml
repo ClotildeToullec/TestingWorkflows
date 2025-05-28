@@ -27,8 +27,23 @@ jobs:
   parameters:
     name: Set parameters
     runs-on: ubuntu-latest
-    env:
-      pharo12: Pharo64-12
-      pharo13: Pharo64-13
     steps:
-      - run: echo ${{ toJSON(env.*) }}
+      - name: Set Pharo versions
+        id: pharo-version
+        run: >-
+          echo pharo-versions=${{ inputs.pharo-versions 
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
+          || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
+          >> $GITHUB_OUTPUT
+      
+  run:
+    runs-on: ubuntu-latest
+    needs: parameters
+    strategy:
+      fail-fast: false
+      matrix:
+        smalltalk: ${{ needs.parameters.outputs.* }}
+    
+    name: ${{ matrix.smalltalk }}
+    steps:
+      - run: echo ${{ matrix.smalltalk }}
