@@ -48,10 +48,94 @@ jobs:
           || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
           >> $GITHUB_OUTPUT
      
-  debug:
+#  debug:
+#    runs-on: ubuntu-latest
+#    needs: parameters
+#    steps:
+#      - run: echo ${{ needs.parameters.outputs.pharo-versions }}
+      
+  run:
     runs-on: ubuntu-latest
     needs: parameters
+    strategy:
+      fail-fast: false
+      matrix:
+        smalltalk: ${{ needs.parameters.outputs.pharo-versions }}
+    
+    name: ${{ matrix.smalltalk }}
     steps:
-      - run: echo ${{ needs.parameters.outputs.pharo-versions }}
-      - run: echo ${{ fromJSON([Pharo64-12, Pharo64-13]) }}
-#      - run: echo ${{fromJSON(needs.parameters.outputs.pharo-versions)}}
+
+# Run tests and coverage
+    
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Option fetching all commits
+      - name: Set-up smalltalkCI
+        uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+      - name: Run tests
+        run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
+        timeout-minutes: 15
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo IMAGE_NAME=${{ needs.parameters.outputs.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
+        # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release: | sed 's/64-//g' >> $GITHUB_ENV
+
+      - name: Coveralls GitHub Action
+        if:  ${{ inputs.run-coverage }}
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{ env.IMAGE_NAME }}
+          parallel: true          
+
+# Upload image as artifact
+      
+      - name: Pre-upload scripts
+        if: ${{ inputs.create-artifact }}
+        # Remove SmalltalkCI from the image + run custom script if provided.
+        # Exemple of custom script: when building for a Moose release, add the commit id to Moose Welcome browser.
+        run: |
+          ls -l $SMALLTALK_CI_VM
+          $SMALLTALK_CI_VM  $SMALLTALK_CI_IMAGE eval --save "${{ inputs.pre-upload-script }}"
+
+      - name: Build artifact
+        if: ${{ inputs.create-artifact }}
+        env:
+          DEFAULT_IMAGE_NAME: TravisCI # Image name set by smalltalkCI
+        run: |
+          mv $SMALLTALK_CI_BUILD/* .
+          mv $DEFAULT_IMAGE_NAME.image $IMAGE_NAME.image
+          mv $DEFAULT_IMAGE_NAME.changes $IMAGE_NAME.changes
+          echo ${{ matrix.smalltalk }} | sed -e 's/.*\-//g ; s/\..*//g ; s/$/0/' > pharo.version
+        # This pattern transforms as follow: 'Pharo64-9.0' --> '90' and 'Pharo64-10' --> '100'.
+        # Remove every character before '-' ; Remove point and anything after it ; add a '0'.
+
+      - name: Upload artifact
+        if: ${{ inputs.create-artifact }}
+        uses: actions/upload-artifact@v4
+        with: 
+          name: ${{ env.IMAGE_NAME }}
+          path: |
+            ${{ env.IMAGE_NAME }}.image
+            ${{ env.IMAGE_NAME }}.changes
+            *.sources
+            pharo.version
+
+# Export coverage
+
+  coverage:
+    name: Export coverage
+    if: ${{ inputs.run-coverage }}
+    needs: run
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:  
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
