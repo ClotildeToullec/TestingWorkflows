@@ -10,17 +10,21 @@ on:
         required: false
         type: string
 
+
+env:
+  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
+    || (github.event_name == 'pull_request' && github.base_ref)
+    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+
 jobs:
   update-release-with-new-artifacts:
     name: Update ${{ inputs.release-tag }} release with new artifacts
     runs-on: ubuntu-latest
     env:
       FILES_NAME_PATTERN: >-
-            ${{ inputs.image-name || 
-              vars.BRANCHES_CONFIGURATION
-              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name] 
-              && fromJSON(vars.BRANCHES_CONFIGURATION)[github.ref_name].image-name 
-              || format('{0}-{1}', github.event.repository.name, github.ref_name) }}*
+        ${{ inputs.image-name 
+        || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
+        || format('{0}-{1}', github.event.repository.name, env.branch-name) }}*
   
     steps:
 
