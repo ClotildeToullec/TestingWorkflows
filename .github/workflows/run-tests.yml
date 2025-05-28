@@ -37,6 +37,12 @@ jobs:
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version])
           || fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest'] }} 
           >> $GITHUB_OUTPUT
+
+  debug: 
+    runs-on: ubuntu-latest
+    needs: parameters
+    steps:
+        - run: echo ${{ needs.parameters.outputs.pharo-versions }}
       
   run:
     runs-on: ubuntu-latest
