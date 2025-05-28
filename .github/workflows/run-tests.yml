@@ -34,7 +34,7 @@ jobs:
         id: pharo-version
         run: >-
           echo pharo-versions=${{ inputs.pharo-versions 
-          || toJSON((vars.BRANCHES_CONFIGURATION && fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version]))
+          || vars.BRANCHES_CONFIGURATION && toJSON((fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version]))
           || toJSON(fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }} 
           >> $GITHUB_OUTPUT
 
