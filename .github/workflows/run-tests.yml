@@ -32,11 +32,14 @@ jobs:
     steps:
       - name: Set Pharo versions
         id: pharo-version
-        run: >-
-          echo pharo-versions=${{ inputs.pharo-versions 
-          || vars.BRANCHES_CONFIGURATION && toJSON((fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version]))
-          || toJSON(fromJSON(vars.MOOSE_PHARO_VERSIONS)["Moose-latest"]) }} 
-          >> $GITHUB_OUTPUT
+        run: echo pharo-versions=${{ toJSON(fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }} >> $GITHUB_OUTPUT
+
+#    run: >-
+#          echo pharo-versions=${{ 
+#          inputs.pharo-versions 
+##          || vars.BRANCHES_CONFIGURATION && toJSON((fromJSON(vars.MOOSE_PHARO_VERSIONS)[fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].moose-version]))
+ #         || toJSON(fromJSON(vars.MOOSE_PHARO_VERSIONS)['Moose-latest']) }} 
+ #         >> $GITHUB_OUTPUT
 
   debug: 
     runs-on: ubuntu-latest
