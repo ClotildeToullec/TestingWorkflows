@@ -32,8 +32,9 @@ jobs:
     steps:
       - name: Set Pharo versions
         id: pharo-version
-        run: echo pharo-versions='${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c '.["Moose-latest"]' >> $GITHUB_OUTPUT
-
+        run: |
+          echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c '.["Moose-latest"]' > tmp.json
+          echo "pharo-versions=$(cat tmp.json)" >> $GITHUB_OUTPUT
 #    run: >-
 #          echo pharo-versions=${{ 
 #          inputs.pharo-versions 
