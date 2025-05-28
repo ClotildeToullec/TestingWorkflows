@@ -27,6 +27,8 @@ jobs:
   parameters:
     name: Set parameters
     runs-on: ubuntu-latest
+    outputs:
+      pharo-versions: ${{ steps.pharo-version.outputs.pharo-versions }}
     steps:
       - name: Set Pharo versions
         id: pharo-version
@@ -47,3 +49,4 @@ jobs:
     name: ${{ matrix.smalltalk }}
     steps:
       - run: echo ${{ matrix.smalltalk }}
+
