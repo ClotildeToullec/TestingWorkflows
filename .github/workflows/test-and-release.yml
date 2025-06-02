@@ -19,6 +19,11 @@ on:
         required: false
         type: boolean
 
+env:
+  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
+    || (github.event_name == 'pull_request' && github.base_ref)
+    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+
 jobs:
   run-tests:
     name: Run tests
@@ -38,3 +43,4 @@ jobs:
     with:
        image-name: ${{ inputs.image-name }}
        release-tag: ${{ inputs.release-tag }}
+       branch-name: branch-name
