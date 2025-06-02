@@ -18,11 +18,10 @@ on:
       run-coverage:
         required: false
         type: boolean
-env:
-  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
-    || (github.event_name == 'pull_request' && github.base_ref)
-    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
-          
+      branch-name:
+        required: true
+        type: string
+              
 jobs:
   parameters:
     name: Set parameters
@@ -40,7 +39,7 @@ jobs:
           echo "pharo-versions=${{ inputs.pharo-versions }}" >> $GITHUB_OUTPUT
 
           elif [ -n "${{ vars.BRANCHES_CONFIGURATION }}" ]; then
-          moose_version=$(echo '${{ vars.BRANCHES_CONFIGURATION }}' | jq -r --arg branch "${{ env.branch-name }}" '.[$branch]."moose-version"')
+          moose_version=$(echo '${{ vars.BRANCHES_CONFIGURATION }}' | jq -r --arg branch "${{ inputs.branch-name }}" '.[$branch]."moose-version"')
           pharo_versions=$(echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c --arg mv "$moose_version" '.[$mv]')
           echo "pharo-versions=$pharo_versions" >> $GITHUB_OUTPUT
 
@@ -54,7 +53,7 @@ jobs:
         run: >-
           echo common-image-name=${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
-          || format('{0}-{1}', github.event.repository.name, env.branch-name) }}
+          || format('{0}-{1}', github.event.repository.name, inputs.branch-name) }}
           >> $GITHUB_OUTPUT
 
   run:
