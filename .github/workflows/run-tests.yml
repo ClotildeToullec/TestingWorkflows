@@ -28,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pharo-versions: ${{ steps.pharo-version.outputs.pharo-versions }}
-      common-image-name: ${{ steps.image-name.outputs.common-image-name }}
     steps:
       - name: Set Pharo versions
         id: pharo-version
@@ -47,14 +46,6 @@ jobs:
             pharo_versions=$(echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c '."Moose-latest"')
             echo "pharo-versions=$pharo_versions" >> $GITHUB_OUTPUT
           fi
-
-      - name: Set Image name
-        id: image-name
-        run: >-
-          echo common-image-name=${{ inputs.image-name 
-          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[inputs.branch-name].image-name)
-          || format('{0}-{1}', github.event.repository.name, inputs.branch-name) }}
-          >> $GITHUB_OUTPUT
 
   run:
     runs-on: ubuntu-latest
@@ -84,7 +75,7 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set image name
-        run: echo IMAGE_NAME=${{ needs.parameters.outputs.common-image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
+        run: echo IMAGE_NAME=${{ inputs.image-name }}-${{ matrix.smalltalk }} >> $GITHUB_ENV
         # The following line will change the asset name in the release and have an impact on download from Pharo-launcher. Do not use it until next release: | sed 's/64-//g' >> $GITHUB_ENV
 
       - name: Coveralls GitHub Action
