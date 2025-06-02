@@ -36,6 +36,9 @@ jobs:
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
           >> $GITHUB_OUTPUT
 
+      - name: print
+        run: echo ${{ steps.branch-name.outputs.branch-name }}
+      
       - name: Image name
         id: image-name
         run: >-
