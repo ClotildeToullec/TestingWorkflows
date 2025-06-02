@@ -34,7 +34,7 @@ jobs:
       pre-upload-script: ${{ inputs.pre-upload-script }}
       create-artifact: true
       run-coverage: ${{ inputs.run-coverage }}
-      branch-name: branch-name
+      branch-name: ${{ env.branch-name }}
   
   update-release:
     name: Update ${{ inputs.release-tag }} release
@@ -44,4 +44,4 @@ jobs:
     with:
        image-name: ${{ inputs.image-name }}
        release-tag: ${{ inputs.release-tag }}
-       branch-name: branch-name
+       branch-name: ${{ env.branch-name }}
