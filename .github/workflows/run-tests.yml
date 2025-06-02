@@ -38,7 +38,7 @@ jobs:
           if [ -n "${{ inputs.pharo-versions }}" ]; then
           echo "pharo-versions=${{ inputs.pharo-versions }}" >> $GITHUB_OUTPUT
 
-          elif [ -n "${{ vars.BRANCHES_CONFIGURATION }}" ]; then
+          elif [ -n "${{ vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[inputs.branch-name] }}" ]; then
           moose_version=$(echo '${{ vars.BRANCHES_CONFIGURATION }}' | jq -r --arg branch "${{ inputs.branch-name }}" '.[$branch]."moose-version"')
           pharo_versions=$(echo '${{ vars.MOOSE_PHARO_VERSIONS }}' | jq -c --arg mv "$moose_version" '.[$mv]')
           echo "pharo-versions=$pharo_versions" >> $GITHUB_OUTPUT
@@ -52,7 +52,7 @@ jobs:
         id: image-name
         run: >-
           echo common-image-name=${{ inputs.image-name 
-          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[env.branch-name].image-name)
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[inputs.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, inputs.branch-name) }}
           >> $GITHUB_OUTPUT
 
