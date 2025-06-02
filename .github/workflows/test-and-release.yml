@@ -26,6 +26,7 @@ jobs:
     name: Set common parameters
     outputs:
       branch-name: ${{ steps.branch-name.outputs.branch-name }}
+      common-image-name: ${{ steps.image-name.outputs.image-name }}
     steps:
       - name: Branch name
         id: branch-name
@@ -33,6 +34,14 @@ jobs:
           echo branch-name=${{ (github.event_name == 'push' && github.ref_name)
           || (github.event_name == 'pull_request' && github.base_ref) 
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+          >> $GITHUB_OUTPUT
+
+      - name: Set Image name
+        id: image-name
+        run: >-
+          echo common-image-name=${{ inputs.image-name 
+          || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[steps.branch-name.outputs.branch-name].image-name)
+          || format('{0}-{1}', github.event.repository.name, steps.branch-name.outputs.branch-name) }}
           >> $GITHUB_OUTPUT
   
   run-tests:
