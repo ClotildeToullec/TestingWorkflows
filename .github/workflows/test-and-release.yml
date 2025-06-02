@@ -19,14 +19,25 @@ on:
         required: false
         type: boolean
 
-env:
-  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
-    || (github.event_name == 'pull_request' && github.base_ref)
-    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
-
 jobs:
+
+  common-parameters:
+    runs-on: ubuntu-latest
+    name: Set common parameters
+    outputs:
+      branch-name: ${{ steps.branch-name.outputs.branch-name }}
+    steps:
+      - name: Branch name
+        id: branch-name
+        run: >-
+          echo branch-name=${{ (github.event_name == 'push' && github.ref_name 
+          || (github.event_name == 'pull_request' && github.base_ref) 
+          || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+          >> $GITHUB_OUTPUT
+  
   run-tests:
     name: Run tests
+    needs: common-parameters
     uses: ./.github/workflows/run-tests.yml
     with:
       image-name: ${{ inputs.image-name }}
@@ -34,14 +45,14 @@ jobs:
       pre-upload-script: ${{ inputs.pre-upload-script }}
       create-artifact: true
       run-coverage: ${{ inputs.run-coverage }}
-      branch-name: ${{ env.branch-name }}
+      branch-name: ${{ needs.branch-name.outputs.branch-name }}
   
   update-release:
     name: Update ${{ inputs.release-tag }} release
     if: ${{ always() }}
-    needs: run-tests
+    needs: [common-parameters, run-tests]
     uses: ./.github/workflows/update-release.yml
     with:
        image-name: ${{ inputs.image-name }}
        release-tag: ${{ inputs.release-tag }}
-       branch-name: ${{ env.branch-name }}
+       branch-name: ${{ needs.branch-name.outputs.branch-name }}
