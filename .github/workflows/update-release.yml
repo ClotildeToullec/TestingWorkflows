@@ -20,8 +20,8 @@ jobs:
     env:
       FILES_NAME_PATTERN: >-
         ${{ inputs.image-name 
-        || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[branch-name].image-name)
-        || format('{0}-{1}', github.event.repository.name, branch-name) }}*
+        || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[inputs.branch-name].image-name)
+        || format('{0}-{1}', github.event.repository.name, inputs.branch-name) }}*
   
     steps:
 
