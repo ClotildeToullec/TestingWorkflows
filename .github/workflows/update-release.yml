@@ -9,12 +9,9 @@ on:
       release-tag:
         required: false
         type: string
-
-
-env:
-  branch-name: ${{ (github.event_name == 'push' && github.ref_name)
-    || (github.event_name == 'pull_request' && github.base_ref)
-    || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+      branch-name:
+        required: true
+        type: string
 
 jobs:
   update-release-with-new-artifacts:
