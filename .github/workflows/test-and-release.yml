@@ -26,7 +26,7 @@ jobs:
     name: Set common parameters
     outputs:
       branch-name: ${{ steps.branch-name.outputs.branch-name }}
-      common-image-name: ${{ steps.image-name.outputs.image-name }}
+      image-name: ${{ steps.image-name.outputs.image-name }}
     steps:
       - name: Branch name
         id: branch-name
@@ -36,13 +36,10 @@ jobs:
           || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
           >> $GITHUB_OUTPUT
 
-      - name: print
-        run: echo ${{ steps.branch-name.outputs.branch-name }}
-      
       - name: Image name
         id: image-name
         run: >-
-          echo common-image-name=${{ inputs.image-name 
+          echo image-name=${{ inputs.image-name 
           || (vars.BRANCHES_CONFIGURATION && fromJSON(vars.BRANCHES_CONFIGURATION)[steps.branch-name.outputs.branch-name].image-name)
           || format('{0}-{1}', github.event.repository.name, steps.branch-name.outputs.branch-name) }}
           >> $GITHUB_OUTPUT
@@ -52,7 +49,7 @@ jobs:
     needs: common-parameters
     uses: ./.github/workflows/run-tests.yml
     with:
-      image-name: ${{ needs.common-parameters.outputs.common-image-name }}
+      image-name: ${{ needs.common-parameters.outputs.image-name }}
       pharo-versions: ${{ inputs.pharo-versions }}
       pre-upload-script: ${{ inputs.pre-upload-script }}
       create-artifact: true
@@ -65,6 +62,6 @@ jobs:
     needs: [common-parameters, run-tests]
     uses: ./.github/workflows/update-release.yml
     with:
-       image-name: ${{ needs.common-parameters.outputs.common-image-name }}
+       image-name: ${{ needs.common-parameters.outputs.image-name }}
        release-tag: ${{ inputs.release-tag }}
        branch-name: ${{ needs.common-parameters.outputs.branch-name }}
