@@ -2,9 +2,10 @@ name: RunFrom fork
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+  release:
+    types: [ created, edited ]
+  workflow_dispatch:
 #  schedule:
 #    - cron:  '0 0 * * *'
 
