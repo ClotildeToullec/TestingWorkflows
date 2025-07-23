@@ -1,0 +1,14 @@
+name: RunFrom fork
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+#  schedule:
+#    - cron:  '0 0 * * *'
+
+jobs:
+  run:
+    uses: moosetechnology/.github/.github/workflows/run-tests.yml@main
+    secrets: inherit
