@@ -2,19 +2,19 @@ name: Tests and Release
 
 on:
   workflow_call:
-    inputs:
-      image-name:
+    inputs: 
+      pharo-versions:
         required: false
         type: string
-      pharo-versions:
+      image-name:
         required: false
         type: string
       pre-upload-script:
         required: false
         type: string
-      release-tag:
+      create-artifact:
         required: false
-        type: string
+        type: boolean
       run-coverage:
         required: false
         type: boolean
@@ -33,7 +33,8 @@ jobs:
         run: >-
           echo branch-name=${{ (github.event_name == 'push' && github.ref_name)
           || (github.event_name == 'pull_request' && github.base_ref) 
-          || (github.event_name == 'release' && github.github.event.release.target_commitish) }}
+          || (github.event_name == 'release' && github.github.event.release.target_commitish)
+          || github.ref_name }}
           >> $GITHUB_OUTPUT
 
       - name: Image name
@@ -47,21 +48,11 @@ jobs:
   run-tests:
     name: Run tests
     needs: common-parameters
-    uses: ./.github/workflows/run-tests.yml
+    uses: ./.github/workflows/run-tests-step.yml
     with:
       image-name: ${{ needs.common-parameters.outputs.image-name }}
       pharo-versions: ${{ inputs.pharo-versions }}
       pre-upload-script: ${{ inputs.pre-upload-script }}
-      create-artifact: true
+      create-artifact: ${{ inputs.create-artifact }}
       run-coverage: ${{ inputs.run-coverage }}
       branch-name: ${{ needs.common-parameters.outputs.branch-name }}
-  
-  update-release:
-    name: Update ${{ inputs.release-tag }} release
-    if: ${{ always() }}
-    needs: [common-parameters, run-tests]
-    uses: ./.github/workflows/update-release.yml
-    with:
-       image-name: ${{ needs.common-parameters.outputs.image-name }}
-       release-tag: ${{ inputs.release-tag }}
-       branch-name: ${{ needs.common-parameters.outputs.branch-name }}
